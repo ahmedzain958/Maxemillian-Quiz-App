@@ -1,7 +1,11 @@
+import 'package:advanced_basics_maxemellian/data/questions.dart';
+import 'package:advanced_basics_maxemellian/results_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:advanced_basics_maxemellian/home_screen.dart';
 import 'package:advanced_basics_maxemellian/questions.dart';
 
+// pivotal file that manages the state of the app and switches between different screens
+// also keeps track of the answers the user selected
 class Quiz extends StatefulWidget {
   const Quiz({super.key});
 
@@ -12,21 +16,39 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
-  Widget? activeScreen;
+  final List<String> selectedAnswers = [];
+  var activeScreen = 'start-screen';
+
   @override
   void initState() {
-    activeScreen = HomeScreen(switchScreen);
     super.initState();
   }
 
   void switchScreen() {
     setState(() {
-      activeScreen = const QuestionsScreen();
+      activeScreen = "questions-screen";
     });
+  }
+
+  void chooseAnswer(String answer) {
+    selectedAnswers.add(answer);
+    if (selectedAnswers.length == questions.length) {
+      setState(() {
+        activeScreen = 'results-screen';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget screenWidget = HomeScreen(switchScreen);
+
+    if (activeScreen == 'questions-screen') {
+      screenWidget = QuestionsScreen(onSelectAnswer: chooseAnswer);
+    } else if (activeScreen == 'results-screen') {
+      screenWidget = ResultsScreen(chosenAnswers: selectedAnswers);
+    }
+
     return MaterialApp(
       home: Scaffold(
         body: Container(
@@ -40,7 +62,7 @@ class _QuizState extends State<Quiz> {
               end: Alignment.bottomRight,
             ),
           ),
-          child: activeScreen,
+          child: screenWidget,
         ),
       ),
     );
