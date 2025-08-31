@@ -3,8 +3,13 @@ import 'package:advanced_basics_maxemellian/questions_summary.dart';
 import 'package:flutter/material.dart';
 
 class ResultsScreen extends StatelessWidget {
-  const ResultsScreen({super.key, required this.chosenAnswers});
+  const ResultsScreen({
+    super.key,
+    required this.chosenAnswers,
+    required this.onRestartQuiz,
+  });
   final List<String> chosenAnswers;
+  final void Function() onRestartQuiz;
 
   List<Map<String, Object>> getSummaryData() {
     final List<Map<String, Object>> summary = [];
@@ -35,7 +40,7 @@ class ResultsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             Text(
+            Text(
               'You answered $numCorrectQuestions out of $numTotalQuestions questions correctly!',
               style: TextStyle(
                 fontSize: 20,
@@ -44,6 +49,15 @@ class ResultsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             QuestionsSummary(summaryData),
+            const SizedBox(height: 30),
+            TextButton.icon(
+              onPressed: onRestartQuiz,
+              label: Text('Restart Quiz'),
+              icon: Icon(Icons.refresh),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+              ),
+            ),
           ],
         ),
       ),
